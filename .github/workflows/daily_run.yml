@@ -31,4 +31,5 @@ jobs:
           git config --global user.email "bot@nbt.com"
           git add nbt_backend_data.csv
           git commit -m "Automated Daily Market Data Update" || exit 0
+          git pull origin main --rebase
           git push
