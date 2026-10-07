@@ -1,0 +1,34 @@
+name: NBT Daily Engine Run
+
+on:
+  schedule:
+    - cron: '0 12 * * 1-5' # Runs at 12:00 PM UTC (5:30 PM IST) Mon-Fri
+  workflow_dispatch: # Allows you to run it manually with a button
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies
+        run: pip install yfinance pandas
+        
+      - name: Run NBT Engine to Generate CSV
+        run: python nbt_backend.py
+        
+      - name: Save CSV to Repository
+        run: |
+          git config --global user.name "NBT-Bot"
+          git config --global user.email "bot@nbt.com"
+          git add nbt_backend_data.csv
+          git commit -m "Automated Daily Market Data Update" || exit 0
+          git push
